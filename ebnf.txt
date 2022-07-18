@@ -1,0 +1,82 @@
+ ParseTree = ParseTree Code
+ Code   =     Stmt
+ Stmt   =     If Expr Then Stmt Else Stmt Endif
+            |     Let Stmt In Stmt 
+            |     Identifier Assign Expr
+            |     Begin ListofStmt
+ ListofStmt =   Stmt SSemicol ListofStmt
+            |     End
+ SSemicol =   Semicolon
+ Bexpr   =   Bterm Mbexpr
+ Bterm  =   Bfactor MBterm
+ Mbexpr =   Implies MBterm
+            | E
+    
+ MBterm  =    Or NMBexpr
+            |     And NMBexpr
+            |     Xor NMBexpr
+            |     Equalto NMBexpr
+            | E    
+
+ ImpBexpr =   
+ NMBexpr =    Not Factor
+            |  E   
+ CmpExpr =    Greaterthan MoreExpr
+            |     Lessthan MoreExpr
+            |    Expr
+ Expr    =    Term MoreExpr
+        --  |     Startbool Bexpr Endbool
+ MoreExpr =   Add Expr
+            |     Sub Expr
+            |   E 
+ Term =       Factor MoreTerm
+ MoreTerm =   Mul Term
+            |     Div Term
+            |    E
+ Factor =     LPar Expr SRPar
+            |     Identifier
+            |     Ast.Num
+            |     Constant
+            |     Invert Ast.Num
+            |   E 
+ Bfactor =   LPar Bexpr SRPar
+            |   Constant
+            |   Identifier
+            |   Not Bfactor 
+
+ SRPar  =     RPar
+ If = If
+ Then = Then
+ Else = Else
+ Let = Let
+ In = In
+ Input = Input
+ Identifier = Identifier String
+ Num = Num Int
+ Assign = Assign
+ Write = Write
+ Begin = Begin
+ End = End
+ Semicolon = Semicolon
+ Add = Add
+ Sub = Sub
+ Mul = Mul
+ Div = Div
+ LPar = LPar
+ RPar = RPar
+ Invert = Invert
+ Constant = Constant String
+ Or = Or
+ And = And
+ Xor = Xor
+ Implies = Implies
+ Equalto = Equalto
+ Not = Not
+ Endif = Endif
+ Negatenum = Negatenum
+ Startbool = Starbool
+ Endbool = Endbool
+ Greaterthan = Greaterthan
+ Lessthan = Lessthan
+ EndLet = EndLet
+
