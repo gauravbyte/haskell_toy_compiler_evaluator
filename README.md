@@ -1,156 +1,163 @@
-# Haskell Toy Language Tokenizer , Parser and Compiler
- this is the tokenizer and parser completely designed haskell which is functional programming language
- Built in Haskell Programming Language
- 
-Parse tree structure
-ParseTree = ParseTree Code
- Code   =     Stmt
- Stmt   =     If Expr Then Stmt Else Stmt Endif
-            |     Let Stmt In Stmt 
-            |     Identifier Assign Expr
-            |     Begin ListofStmt  <br />
- ListofStmt =   Stmt SSemicol ListofStmt
-            |     End  <br />
- SSemicol =   Semicolon
- Bexpr   =   Bterm Mbexpr
- Bterm  =   Bfactor MBterm
- Mbexpr =   Implies MBterm
-            | E <br />
-    
- MBterm  =    Or NMBexpr
-            |     And NMBexpr
-            |     Xor NMBexpr
-            |     Equalto NMBexpr
-            | E     <br />
 
- NMBexpr =    Not Factor
-            |  E    <br />
- CmpExpr =    Greaterthan MoreExpr
-            |     Lessthan MoreExpr
-            |    Expr  <br />
- Expr    =    Term MoreExpr
-        --  |     Startbool Bexpr Endbool  <br />
- MoreExpr =   Add Expr
-            |     Sub Expr
-            |   E  <br />
- Term =       Factor MoreTerm  <br />
- MoreTerm =   Mul Term
-            |     Div Term
-            |    E  <br />
- Factor =     LPar Expr SRPar
-            |     Identifier
-            |     Ast.Num
-            |     Constant
-            |     Invert Ast.Num
-            |   E  <br />
- Bfactor =   LPar Bexpr SRPar
-            |   Constant
-            |   Identifier
-            |   Not Bfactor   <br />
+# Haskell Toy Language Compiler
 
- SRPar  =     RPar
- If = If                                                <br />
- Then = Then             <br />
- Else = Else             <br />
- Let = Let             <br />
- In = In             <br />
- Input = Input             <br />
- Identifier = Identifier String             <br />
- Num = Num Int             <br />
- Assign = Assign             <br />
- Write = Write             <br />
- Begin = Begin             <br />
- End = End             <br />
- Semicolon = Semicolon             <br />
- Add = Add             <br />
- Sub = Sub             <br />
- Mul = Mul             <br />
- Div = Div             <br />
- LPar = LPar             <br />
- RPar = RPar             <br />
- Invert = Invert             <br />
- Constant = Constant String             <br />
- Or = Or             <br />
- And = And             <br />
- Xor = Xor             <br />
- Implies = Implies             <br />
- Equalto = Equalto             <br />
- Not = Not             <br />
- Endif = Endif             <br />
- Negatenum = Negatenum             <br />
- Startbool = Starbool             <br />
- Endbool = Endbool             <br />
- Greaterthan = Greaterthan             <br />
- Lessthan = Lessthan             <br />
- EndLet = EndLet             <br />
+This project implements a **toy programming language** with a **lexer**, **parser**, **typechecker**, and **evaluator**, entirely written in **Haskell**. It demonstrates a minimal yet functional language supporting arithmetic, booleans, functions, and let-bindings.
 
+---
 
+## ✨ Features
 
+- **Tokenizer**: Uses [Alex](https://www.haskell.org/alex/) (`Lexer.x`) to tokenize the source code.
+- **Parser**: Uses [Happy](https://www.haskell.org/happy/) (`Grammar.y`) to construct an abstract syntax tree (AST).
+- **Typechecker**: Statically checks types of expressions (`Typing.hs`).
+- **Evaluator**: Evaluates programs using a CEK machine (`Evaluator.hs`).
+- **Interactive and Batch Modes**: Run code in a REPL or from a file.
+- **Strict Block Syntax**: Only `{}` blocks can contain multiple statements, separated by `;`.
 
-usage :
-use make command in terminal it will generate parse tree for for given program
+---
 
-program files in source folder to not accidently deleting file while cleaning
+## 📘 Language Syntax
 
+### Statements
 
-type make outside src folder
-or you can do
-./a2 Filenam
+```
+If Expr Then Stmt Else Stmt Endif
+Let Stmt In Stmt
+Identifier := Expr
+Begin ListOfStmt End
+```
 
+### Expressions
 
-I implemented some additional implementation such as
+```
+Arithmetic: +, -, *, /
+Booleans: &&, ||, !, <, >, =
+Functions: Lambda abstraction, application
+Let binding: let (x : Type) = Expr in Expr
+Conditionals: if Expr then Expr else Expr
+```
 
-list of statement must be inside { } block for statement out side block more than one statement will give syntax errors
-statements inside {} are separated by semicolon
+### Types
 
-Boolean Expression are to be implemented in grammar
+```
+Int, Bool, Type -> Type
+```
 
+---
 
+## 📂 File Structure
 
+| File            | Description                                      |
+|-----------------|--------------------------------------------------|
+| `Lexer.x`       | Alex lexer definition                            |
+| `Grammar.y`     | Happy parser and AST definitions                 |
+| `Typing.hs`     | Static typechecker                               |
+| `Evaluator.hs`  | CEK machine evaluator                            |
+| `a3.hs`         | Batch mode runner                                |
+| `a3term.hs`     | Interactive REPL                                 |
+| `test*.txt`     | Sample test cases                                |
+| `Makefile`      | Build script                                     |
+| `src/`          | Archive of older or experimental code versions   |
 
+---
 
-sampleinput output 
+## 🛠️ Building
 
-if i:= 0 then {j:=0;n :=23+65+65*43*43;}else {m := 2+3+4; Let j:=1 in {if 4+4*2then j:=234+544 else fi:=2; J:=23}
-output
+To build the project, run:
 
-[IF "if",VAR "i",ASSIGNMENT ":=",INT "0",THEN "then",END "{",VAR "j",ASSIGNMENT ":=",INT "0",SEMICOLON ";",VAR "n",ASSIGNMENT 
-":=",INT "23",PLUS "+",INT "65",PLUS "+",INT "65",TIMES "*",INT "43",TIMES "*",
-INT "43",SEMICOLON ";",BEGIN "}",ELSE "else",END "{",VAR "m",ASSIGNMENT ":=",INT "2",PLUS "+",INT "3",PLUS "+",INT "4",SEMICOLON ";",VAR "Let",
-VAR "j",ASSIGNMENT ":=",INT "1",IN "in",END "{",IF "if",INT "4",PLUS "+",INT "4",TIMES "*",INT "2",THEN "then",VAR "j",ASSIGNMENT ":=",
-INT "234",PLUS "+",INT "544",ELSE "else",ENDIF "fi",ASSIGNMENT ":=",INT "2",SEMICOLON ";",VAR "J",ASSIGNMENT ":=",INT "23",BEGIN "}"]
+```bash
+make
+```
 
-STARTPROGRAM (
-IF ( ( ID "i")) THEN (
-a2: SyntaxErrorunexpected token 'ASSIGNMENT' (expected if, let, in, [identifier], or {) at 1:5
-CallStack (from HasCallStack):
-  error, called at ./Ast.hs:293:5 in main:Ast
-make: *** [Makefile:7: src] Error 1
+This will:
+- Generate lexer and parser
+- Compile executables: `a3` (batch mode), `a3term` (interactive)
 
+---
 
+## ▶️ Usage
 
+### Batch Mode
 
+Run a program from a file:
 
+```bash
+./a3 test1.txt
+```
 
+### Interactive Mode
 
+Start the REPL:
 
+```bash
+./a3term
+```
 
+Enter expressions interactively at the prompt.
 
-./a2 input.txt
-output
-[IF "if",INT "2",PLUS "+",INT "4",PLUS "+",INT "50",THEN "then",END "{",VAR "j",ASSIGNMENT ":=",INT "0",SEMICOLON ";",VAR "n",ASSIGNMENT ":=",
-INT "23",PLUS "+",INT "65",PLUS "+",INT "65",TIMES "*",INT "43",TIMES "*",INT "43",SEMICOLON ";",BEGIN "}",ELSE "else",END "{",VAR "j",ASSIGNMENT ":=",
-INT "343",TIMES "*",INT "532",TIMES "*",INT "43",PLUS "+",INT "23",PLUS "+",INT "54",SEMICOLON ";",BEGIN "}"]
+---
 
-STARTPROGRAM (
-IF Binaryexp(ADDExp((2)+Binaryexp(ADDExp((4)+(50))) THEN (
-LiST OF STATEMTNT[
-(( ID "j") := (0));
-(( ID "n") := Binaryexp(ADDExp((23)+Binaryexp(ADDExp((65)+Binaryexp(MULExp((65) * Binaryexp(MULExp((43) * (43))))));
-] ENDLIST;
-) ELSE (
-LiST OF STATEMTNT[
-(( ID "j") := Binaryexp(ADDExp(Binaryexp(MULExp((343) * Binaryexp(MULExp((532) * (43)))+Binaryexp(ADDExp((23)+(54))));
-] ENDLIST;
-) ENDIF;
-) EOF
+## 📄 Example (test1.txt)
+
+### Input
+
+```haskell
+if 6 < 9 then (if true then let (x : Int) = 4 + 7 in x + 13 else 0) else 1
+```
+
+### Output
+
+```
+Parsing: if 6 < 9 then (if true then let (x : Int) = 4 + 7 in x + 13 else 0) else 1
+Type Checking Passed with type Int
+Evaluates to 24
+```
+
+---
+
+## 🧪 Additional Syntax Rules
+
+- Statements must be inside `{}` blocks if more than one.
+- Statements within blocks must be separated by `;`.
+- Boolean expressions now supported in grammar.
+
+---
+
+## 🧾 Sample Input/Output
+
+### Input (in `input.txt`)
+
+```haskell
+if 2 + 4 + 50 then {
+  j := 0;
+  n := 23 + 65 + 65 * 43 * 43;
+} else {
+  j := 343 * 532 * 43 + 23 + 54;
+}
+```
+
+### Output
+
+```
+Parsed AST...
+Type checking passed...
+Evaluates to ...
+```
+
+---
+
+## 🧹 Clean Build
+
+To clean all generated files and binaries:
+
+```bash
+make clean
+```
+
+*Note: Source programs are in the root directory; `src/` contains older versions.*
+
+---
+
+## 🧑‍💻 Author
+
+This project was built as a demonstration of compiler construction using Haskell, showcasing concepts such as tokenization, parsing, typing, and CEK-based evaluation.
